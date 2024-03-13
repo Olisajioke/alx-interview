@@ -1,32 +1,63 @@
 #!/usr/bin/python3
+"""Solves the lock boxes puzzle."""
+
+def find_keys_in_open_box(box_track):
+    """Finds keys in the next open box.
+    Args:
+        box_track (dict): Dictionary containing the status of each box.
+    Returns:
+        list: Keys found in the opened box.
+    """
+    for box_id, details in box_track.items():
+        if details['state'] == 'open':
+            details['state'] = 'checked'
+            return details['inside_keys']
+    return None
 
 
 def canUnlockAll(boxes):
-    """
-    Determines if all the boxes can be opened.
-
+    """Determines if all boxes can be opened with the keys available.
     Args:
-        boxes (list of list of int): A list of lists where each in
-        and contains integers representing the keys to other boxes.
-
+        boxes (list): List of lists, each containing keys inside a box.
     Returns:
-        bool: True if all boxes can be opened, False otherwise.
+        bool: True if all boxes can be opened; otherwise, False.
     """
-    if not boxes:
-        return False
+    if not boxes or len(boxes) == 1:
+        return True
 
-    keys = set(boxes[0])
-    unlocked = {0}
+    tracking = {}
+    while True:
+        if not tracking:
+            tracking[0] = {
+                'state': 'open',
+                'inside_keys': boxes[0],
+            }
+        box_keys = find_keys_in_open_box(tracking)
+        if box_keys:
+            for key in box_keys:
+                try:
+                    if tracking.get(key) and tracking[key]['state'] == 'checked':
+                        continue
+                    tracking[key] = {
+                        'state': 'open',
+                        'inside_keys': boxes[key]
+                    }
+                except IndexError:
+                    continue
+        elif 'open' in [box['state'] for box in tracking.values()]:
+            continue
+        elif len(tracking) == len(boxes):
+            break
+        else:
+            return False
 
-    # Iterate through unlocked boxes and collect keys
-    while keys:
-        new_keys = set()
-        for box in list(unlocked):
-            for key in boxes[box]:
-                if key not in unlocked:
-                    new_keys.add(key)
-                    unlocked.add(key)
-        keys.update(new_keys)
-        keys -= unlocked
+    return True
 
-    return len(unlocked) == len(boxes)
+
+def main():
+    """Main function to test box unlocking logic."""
+    canUnlockAll([[]])
+
+
+if __name__ == "__main__":
+    main()
