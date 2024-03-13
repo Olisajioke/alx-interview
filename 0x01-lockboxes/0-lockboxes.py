@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Solves the lock boxes puzzle."""
 
+
 def find_keys_in_open_box(box_track):
     """Finds keys in the next open box.
     Args:
@@ -25,28 +26,28 @@ def canUnlockAll(boxes):
     if not boxes or len(boxes) == 1:
         return True
 
-    tracking = {}
+    trkn = {}
     while True:
-        if not tracking:
-            tracking[0] = {
+        if not trkn:
+            trkn[0] = {
                 'state': 'open',
                 'inside_keys': boxes[0],
             }
-        box_keys = find_keys_in_open_box(tracking)
+        box_keys = find_keys_in_open_box(trkn)
         if box_keys:
             for key in box_keys:
                 try:
-                    if tracking.get(key) and tracking[key]['state'] == 'checked':
+                    if trkn.get(key) and trkn[key]['state'] == 'checked':
                         continue
-                    tracking[key] = {
+                    trkn[key] = {
                         'state': 'open',
                         'inside_keys': boxes[key]
                     }
                 except IndexError:
                     continue
-        elif 'open' in [box['state'] for box in tracking.values()]:
+        elif 'open' in [box['state'] for box in trkn.values()]:
             continue
-        elif len(tracking) == len(boxes):
+        elif len(trkn) == len(boxes):
             break
         else:
             return False
