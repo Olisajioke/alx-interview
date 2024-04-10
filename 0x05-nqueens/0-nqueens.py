@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """Solves the N queens puzzle and prints every possible solution."""
 import sys
 
