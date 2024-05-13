@@ -18,27 +18,27 @@ def isWinner(x, nums):
                 for j in range(i * i, limit + 1, i):
                     sieve[j] = False
         return [i for i in range(limit + 1) if sieve[i]]
-    
+
     def count_primes_up_to_n(n):
         """
         Count the number of prime numbers up to n.
         """
         primes = sieve_of_eratosthenes(n)
         return len(primes)
-    
+
     maria_wins = 0
     ben_wins = 0
-    
+
     for n in nums:
         # Count the number of prime numbers up to n
         primes_count = count_primes_up_to_n(n)
-        
+
         # If the count is odd, Maria wins; otherwise, Ben wins
         if primes_count % 2 == 1:
             maria_wins += 1
         else:
             ben_wins += 1
-    
+
     if maria_wins > ben_wins:
         return "Maria"
     elif ben_wins > maria_wins:
