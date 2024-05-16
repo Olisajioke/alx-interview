@@ -3,24 +3,47 @@
 
 
 def isWinner(x, nums):
-    """Determine who the winner of the game is."""
-    def sieve_of_eratosthenes(limit):
-        sieve = [True] * (limit + 1)
-        sieve[0] = sieve[1] = False
-        for i in range(2, int(limit ** 0.5) + 1):
-            if sieve[i]:
-                for j in range(i * i, limit + 1, i):
-                    sieve[j] = False
-        return sum(sieve)
+    """Find the winner of the game"""
+    def is_prime(num):
+        """Check if a number is prime"""
+        if num < 2:
+            return False
+        for i in range(2, int(num**0.5) + 1):
+            if num % i == 0:
+                return False
+        return True
 
-    maria_wins, ben_wins = 0, 0
+    def get_next_prime(start):
+        """Find the next prime number after start"""
+        start += 1  # Start searching from the next number
+        while True:
+            if is_prime(start):
+                return start
+            start += 1
 
+    def play_round(n):
+        """Play a round of the game"""
+        maria_turn = True
+        while n > 1:
+            prime = get_next_prime(2)
+            if maria_turn:
+                n -= prime
+            else:
+                n -= prime * (n // prime)
+            maria_turn = not maria_turn
+        return "Maria" if maria_turn else "Ben"
+
+    winners = []
     for n in nums:
-        if sieve_of_eratosthenes(n) % 2 == 1:
-            maria_wins += 1
-        else:
-            ben_wins += 1
+        winners.append(play_round(n))
 
-    return ("Maria" if maria_wins > ben_wins else
-            "Ben" if ben_wins > maria_wins else
-            None)
+    # Count the winners
+    maria_wins = winners.count("Maria")
+    ben_wins = winners.count("Ben")
+
+    if maria_wins > ben_wins:
+        return "Maria"
+    elif ben_wins > maria_wins:
+        return "Ben"
+    else:
+        return None
